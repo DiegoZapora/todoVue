@@ -1,6 +1,14 @@
 <template>
-    <div class="bg-gray-300 rounded-sm">
-        <div class="flex items-center px-4 py-3 border-b border-gray-400 last:border-b-0">
+    <div class="w-full" v-if="todosStore.loading">
+        <Spinner />
+        <p class="text-white font-bold text-center">Carregando...</p>
+    </div>
+    <div v-else-if="todosStore.todos.length == 0">
+        <TodoEmpty />
+    </div>
+    <div v-else class="bg-gray-300 rounded-sm">
+        <div class="flex items-center px-4 py-3 border-b border-gray-400 last:border-b-0"
+            v-for="todo in todosStore.todos">
             <div class="flex items-center justify-center mr-2">
                 <button class="text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -10,13 +18,16 @@
                     </svg>
                 </button>
             </div>
-            <div class="w-full">
-                <p
-                    class="bg-gray-300 placeholder-gray-500 text-gray-700 font-light focus:outline-none block w-full appearance-none leading-normal mr-3">
-                    Estudar Vue</p>
+
+            <div v-if="todosStore.error">
+                Erro: {{ todosStore.error }}
+            </div>
+
+            <div class="w-full" v-else>
+                <p>{{ todo.title }}</p>
             </div>
             <div class="ml-auto flex items-center justify-center">
-                <button class="focus:outline-none">
+                <button class="focus:outline-none cursor-pointer" @click="todoDelete(todo._id)">
                     <svg class="ml-3 h-4 w-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M19 7L18.1327 19.1425C18.0579 
@@ -29,3 +40,16 @@
         </div>
     </div>
 </template>
+
+<script setup>
+import { useTodos } from '../store/TodoStore';
+import Spinner from './TodoSpinner.vue';
+import TodoEmpty from "./TodoEmpty.vue"
+
+const todosStore = useTodos()
+
+const todoDelete = (id) => {
+    todosStore.deleteTarefa(id)
+}
+
+</script>

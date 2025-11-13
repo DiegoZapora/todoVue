@@ -1,14 +1,24 @@
 <template>
-    <input :type="tipo" :name="Fname" :id="Fid" :placeholder="Fplaceholder" />
+    <input v-bind="$attrs" v-model="valorInterno" />
 </template>
 
 <script  setup>
+import { computed } from 'vue';
 
 const props = defineProps({
-    tipo: String,
-    Fname: String,
-    Fid: String || Number,
-    Fplaceholder: String
+    modelValue: [String, Number]
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const valorInterno = computed({
+    get() {
+        return props.modelValue
+    },
+
+    set(novoValor) {
+        emit('update:modelValue', novoValor)
+    }
 })
 
 </script>

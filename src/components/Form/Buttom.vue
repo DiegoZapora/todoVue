@@ -1,11 +1,10 @@
 <template>
-    <button :type="tipoBtn">{{ btnText }}</button>
+    <button v-bind="$attrs">{{ btnText }}</button>
 </template>
 
 <script setup>
 
 const props = defineProps({
-    tipoBtn: String,
     btnText: String
 })
 

@@ -14,10 +14,31 @@ mongoose.connect("mongodb://localhost/todoVue")
         console.log("Conectado ao MongoDB")
     })
 
+
+app.post("/todos/add", async (req, res) => {
+    try {
+        const novoTodo = new Todos(req.body)
+        const todoSava = await novoTodo.save()
+        res.json(todoSava)
+    } catch(err) {
+        console.log(err)
+    }
+})
+
 app.get("/todos", async (req, res) => {
     try {
         const getTodos = await Todos.find()
         res.json(getTodos)
+    } catch (err) {
+        console.log(err)
+    }
+}),
+
+app.delete("/todos/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        const todoDeletada = await Todos.findByIdAndDelete(id)
+        res.json()
     } catch (err) {
         console.log(err)
     }
