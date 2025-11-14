@@ -20,7 +20,7 @@ app.post("/todos/add", async (req, res) => {
         const novoTodo = new Todos(req.body)
         const todoSava = await novoTodo.save()
         res.json(todoSava)
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
 })
@@ -34,15 +34,33 @@ app.get("/todos", async (req, res) => {
     }
 }),
 
-app.delete("/todos/:id", async (req, res) => {
-    try {
-        const id = req.params.id
-        const todoDeletada = await Todos.findByIdAndDelete(id)
-        res.json()
-    } catch (err) {
-        console.log(err)
-    }
-})
+    app.delete("/todos/:id", async (req, res) => {
+        try {
+            const id = req.params.id
+            const todoDeletada = await Todos.findByIdAndDelete(id)
+            res.json()
+        } catch (err) {
+            console.log(err)
+        }
+    }),
+
+    app.patch("/todos/feitas/:id", async (req, res) => {
+        try {
+            const id = req.params.id
+            const novoCompleted = req.body.completed
+
+            const todoFeita = await Todos.findByIdAndUpdate(
+                id,
+                {completed: novoCompleted},
+                { new: true, runValidators: true }
+            )
+
+            res.json(todoFeita)
+
+        } catch (err) {
+            console.log(err)
+        }
+    })
 
 app.listen("8085", () => {
     console.log("Estamos rodando!")

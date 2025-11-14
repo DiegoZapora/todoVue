@@ -26,9 +26,7 @@ export const useTodos = defineStore('main', {
             } catch (e) {
                 this.error = e.message
             } finally {
-                setTimeout(() => {
-                    this.loadingTimer()
-                }, 2000);
+                this.loading = false
             }
         },
 
@@ -55,7 +53,7 @@ export const useTodos = defineStore('main', {
                 this.error = e.message
                 throw e
             } finally {
-                this.loadingTimer()
+                this.loading = false
             }
         },
 
@@ -66,15 +64,30 @@ export const useTodos = defineStore('main', {
                 })
 
                 this.todos = this.todos.filter(todo => todo._id != id)
-            } catch(err) {
+            } catch (err) {
                 console.log(err)
             }
         },
 
-        loadingTimer() {
-            setTimeout(() => {
-                this.loading = false
-            }, 1)
+        async patchMarcar(id) {
+            try {
+                const res = await fetch(`http://localhost:8085/todos/feitas/${id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ completed: true })
+                })
+
+                const todoAtualizado = await res.json()
+
+                const index = this.todos.findIndex(todo => todo._id === id)
+
+                if (index !== -1) {
+                    this.todos[index] = todoAtualizado
+                }
+
+            } catch (err) {
+                console.log(err)
+            }
         }
     }
 })
